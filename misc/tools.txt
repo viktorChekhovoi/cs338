@@ -1,0 +1,19 @@
+Viktor Chekhovoi
+
+1. ifconfig
+2. nslookup *hostname*
+3. nslookup *ip address*
+4. scp *filepath* *user*@*server*:*filepath*
+5. nmap -A -T4 *hostname* | grep *port*/tcp; if a port is "open", there is a process listening on it and if it's "closed", no process is listening
+6. nmap -A -T4 *hostname* | grep open
+7. curl *url* > output.txt
+8. curl -I *url*
+9. Add a -v flag to curl. Headers prefixed with '>' are sent by your computer
+
+
+
+Citations:
+Question 4: https://mkyong.com/linux/copy-file-to-from-server-via-scp-command/ 
+Question 5: https://www.cyberciti.biz/faq/unix-linux-check-if-port-is-in-use-command/
+Question 8: https://linuxconfig.org/how-to-check-a-website-header-using-linux-command-line
+Question 9: https://stackoverflow.com/questions/866946/how-can-i-see-the-request-headers-made-by-curl-when-sending-a-request-to-the-ser 
