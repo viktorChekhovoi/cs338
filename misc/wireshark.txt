@@ -36,3 +36,7 @@ Viktor Chekhovoi
 
         I think it's the correct frame becase it retrieved a JPEG image, which would be the image of Jeff's head.
 
+
+===== QUESTIONS =====
+
+Overall the output is pretty clear, but I'm confused about some of the stuff in the info field, for example, Seq=652 Ack=38008 Win=48180 Len=0. What do these (and similar) arguments mean in a packet?
