@@ -1,0 +1,38 @@
+Viktor Chekhovoi
+
+
+===== DAYTIME =====
+
+1. 1 192.168.109.128 129.6.15.30 TCP [SYN]
+   2 129.6.15.30 192.168.109.128 TCP [SYN, ACK]
+   3 129.168.109.128 129.6.15.30 TCP [ACK]
+
+2. The client uses port 13. It needs a port because the Netcat process sends some data to an external server, so it uses a port to send and receive data.
+
+3. 4 129.6.15.30 192.168.109.128 DAYTIME "DAYTIME response"
+
+4. The frame contains information on the order of the frame in the, the time since the process started, the length of the packet, and other information: reserved flags (like SYN or FIN), sequence number, window size, acknowledgement number, and the maximum segment size - the maximum size of the response.
+
+5. [SYN] signals the start of communications between a client and a server.
+
+6. [ACK] is used to acknowledge that a packet was successfully received.
+
+7. [FIN] is used to stop the communication between a client and a server. 
+
+8. The client initiated the termination. I determined that by looking at the source IP in the request containing [FIN]. The IP address was equal to my IP, so I knew it was the client.
+
+===== HTTP =====
+
+1. I found two packets that would open a TCP connection. For both, the source was my computer, the destination was the server, and they had only the [SYN] flag
+
+2. Yes, I found it by looking at the protocols used by some of the first requests. The frame is 
+
+        4 192.168.109.128 45.79.89.123 HTTP GET /index.html HTTP/1.1 
+
+        I determined that it's the required frame by looking at its summary in WireShark, which said that this packet requested the URI /index.html
+
+3. Yes, I found it by looking at the info field. The frame is 
+        39 45.79.89.123 192.168.109.128 HTTP HTTP/1.1 200 OK (JPEG JFIF image)
+
+        I think it's the correct frame becase it retrieved a JPEG image, which would be the image of Jeff's head.
+
