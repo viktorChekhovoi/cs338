@@ -1,9 +1,9 @@
 Part 1
-Total time: [user time from a "time" command]
+Total time: 0.43 s
 Number of hashes computed: 267733
 Passwords cracked: 2805
-Time per hash computed: [seconds per hash]
-Time per password cracked: [seconds per password]
+Time per hash computed: 1.6 * 10^-6
+Time per password cracked: 0.000153
 Passwords cracked per number of hashes computed: 0.01048
 
 Part 2
@@ -24,9 +24,20 @@ Passwords cracked per number of hashes computed: [passwords per hash]
 
 Analysis:
 - Did your time per hash computed change between phases? By what factor? Why?
+Although I don't have the exact measurements yet, I expect the time per hash to remain approximately the same. In all 3 cases, computing one hash takes about the same amount of time, therefore time per hash should remain the same. 
+
 - Did your time per password crack change between phases? By what factor? Why?
+Again, I don't have the exact data yet. However, I expect the time per password crack in parts 2 and 3 to be greater than that in part 1 by a factor of about 250,000 - the number of words that could be in the passwords. The primary reason for this is that in parts 2 and 3, there are that many more times possible options for each password. 
+
 - Suppose you wanted to precompute all the hashes for each possible password
 so you could just look up the password in a table indexed by the hash. How much
 memory would be required for each phase?
+For phase 1: 267733 * (32 + 16 + 32) = 21418640 (2.14 MB)
+For phase 2: 267733^2 * (32 + 16 + 32) = 5.73 *10^12 B = 5.73 TB
+For phase 3: 267733^2 * (32 + 16 + 32) = 5.73 *10^12 B = 5.73 TB
+
 - Give 3-4 reasons we should store password hashes and not the passwords themselves.
 Think in terms of threats, who the attackers might be, etc.
+1. A worker with access to the database can't get user's passwords
+2. Attackers who get a hold of the password database can't immediately get the passwords, and need to do a huge amount of work to pick them
+3. Storing the passwords in plaintext makes database leaks even more dangerous since people often reuse passwords. As a result, if passwords aren't hashes, a database leak immediately results in external accounts being compromised. 
