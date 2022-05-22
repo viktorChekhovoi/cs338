@@ -1,0 +1,50 @@
+Viktor Chekhovoi
+
+a. 00:0c:29:db:43:8c
+b. 192.168.109.128
+c. 00:0c:29:bd:61:81
+d. 129.168.109.130
+e. Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+    default         192.168.109.2   0.0.0.0         UG        0 0          0 eth0
+    192.168.109.0   0.0.0.0         255.255.255.0   U         0 0          0 eth0
+f. Address                  HWtype  HWaddress           Flags Mask            Iface
+   192.168.109.2            ether   00:50:56:ea:1e:d2   C                     eth0
+g. Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+    192.168.109.0   *              255.255.255.0   U         0 0          0 eth0
+    default         192.168.109.2  0.0.0.0         UG        0 0          0 eth0
+h. Address                  HWtype  HWaddress           Flags Mask            Iface
+   192.168.109.2            ether   00:50:56:EA:1E:D2   C                     eth0
+i. It would send the query to 00:50:56:ea:1e:d2, which is the MAC address corresponding to the default gateway. Since cs338.jeffondich.com isn't on the local network, Metasploitable needs to send the packet through the gateway.
+j. The Metasploitable command prints the html of the webpage. Wireshark captured the following packets:
+    No  Time        Source          Destination     Protocol    Length  Info
+    1	0.000000000	192.168.109.130	45.79.89.123	TCP	         74	    53305 → 80 [SYN] Seq=0 Win=5840 Len=0 MSS=1460 SACK_PERM=1 TSval=147816 TSecr=0 WS=32
+    2	0.073313569	45.79.89.123	192.168.109.130	TCP	         60	    80 → 53305 [SYN, ACK] Seq=0 Ack=1 Win=64240 Len=0 MSS=1460
+    3	0.073358185	192.168.109.130	45.79.89.123	TCP	         60	    53305 → 80 [ACK] Seq=1 Ack=1 Win=5840 Len=0
+    4	0.073751571	192.168.109.130	45.79.89.123	HTTP	     212	GET / HTTP/1.1 
+    5	0.073883583	45.79.89.123	192.168.109.130	TCP	         60	    80 → 53305 [ACK] Seq=1 Ack=159 Win=64240 Len=0
+    6	0.121739357	45.79.89.123	192.168.109.130	HTTP	     785	HTTP/1.1 200 OK  (text/html)
+    7	0.121784114	192.168.109.130	45.79.89.123	TCP	         60	    53305 → 80 [ACK] Seq=159 Ack=732 Win=6579 Len=0
+    8	0.122938222	192.168.109.130	45.79.89.123	TCP	         60	    53305 → 80 [FIN, ACK] Seq=159 Ack=732 Win=6579 Len=0
+    9	0.123175293	45.79.89.123	192.168.109.130	TCP	         60	    80 → 53305 [ACK] Seq=732 Ack=160 Win=64239 Len=0
+    10	0.170704817	45.79.89.123	192.168.109.130	TCP	         60	    80 → 53305 [FIN, PSH, ACK] Seq=732 Ack=160 Win=64239 Len=0
+    11	0.170705088	192.168.109.130	45.79.89.123	TCP	         60	    53305 → 80 [ACK] Seq=160 Ack=733 Win=6579 Len=0
+
+    Metasploitable and the web server go through a TCP handshake (1-3), Metasploitable sends a GET request (4) and the server sends back the response (5-7). After that, the connection is terminated (8-11)
+k. Done! 
+l. Address                  HWtype  HWaddress           Flags Mask            Iface
+   192.168.109.1            ether   00:0c:29:DB:43:8C   C                     eth0
+   192.168.109.2            ether   00:0c:29:DB:43:8C   C                     eth0
+   192.168.109.128          ether   00:0c:29:DB:43:8C   C                     eth0
+   192.168.109.254          ether   00:0c:29:DB:43:8C   C                     eth0\
+
+   Every MAC address was replaced with Kali's MAC address!
+
+m. I think Metasploitable will should a packet to the Kali MAC address. Normally, the packet would go to the gateway, but due to the ARP poisoning, Metasploitable thinks it has the gateway's MAC address cached and so it will send a packet there. However, it will go through Kali, which will let the system eavesdrop.
+n. Done!
+o. On Metasploitable, the command still returns the HTML of the webpage. On Kali, I can see some packets I couldn't see before, like "TCP Retransmission" and "TCP Out-Of-Order" packets, as well as one "Keep-Alive" packet.
+p. During an ARP poisoning attack, Kali sends continuous ARP replies to the target address that claim that every other address on the network has the MAC address of the attacker. Since the ARP protocol was designed in 1982, it may not have accounted for PITM attacks. 
+As a result, the target of the attack will accept any reply, according to the protocol. 
+q. In general, a device can only have 1 IP address and 1 MAC address, establishing a 1:1 correspondence between MAC and IP. Based on this, an ARP spoofing detector can periodically monitor the computer's ARP cache and take action/notify the user when it detects multiple IPs with the same MAC address.
+However, in some cases, it's possible for one MAC address to correspond to several IPs (https://www.quora.com/Can-one-MAC-address-have-multiple-IP-addresses, not the most reliable source but it has explanations). This kind of spoofing detection would treat these as evidence of an attack, resulting in a false positive. 
+
+
